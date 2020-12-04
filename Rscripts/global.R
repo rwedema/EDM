@@ -5,34 +5,51 @@ library(stringr)
 
 data_dir <- '../data/'
 
+my_files_neutro <- c(
+  'Neutrophils_GST_GppNHp.txt',
+  'Neutrophils_Galphai_AluF.txt',
+  'Neutrophils_Galphai_AluFl_GST.txt',
+  'Neutrophils_Galphai_GDP.txt',
+  'Neutrophils_Galphai_GDP_GST.txt',
+  'Neutrophils_Galphai2_GDP.txt',
+  'Neutrophils_Galphai_GppNHp.txt',
+  'Neutrophils_Rac_GppNHp.txt'
+)
 
-data_list <- list()
-my_files <- c(
-  'Chemotaxis Dicty RasC.txt',
-  'Chemotaxis Dicty Ric8.txt',
-  'Chemotaxis Dicty Roco4_BACKGROUND.txt',
-  'Chemotaxis Dicty Galpha8_GppNHp.txt',
-  'Chemotaxis Dicty Gbeta1.txt',
-  'Chemotaxis Dicty Galpha8_GDP.txt',
-  'Chemotaxis Dicty RapA.txt',
-  'Chemotaxis Dicty Galpha2_starv.txt',
-  'Chemotaxis Dicty Gbeta2.txt',
-  'Chemotaxis Dicty Galpha4.txt',
-  'Chemotaxis Dicty Galpha8.txt',
-  'Chemotaxis Dicty RasB.txt',
-  'Chemotaxis Dicty Rac1.txt',
-  'Chemotaxis Dicty RasG1.txt',
-  'Chemotaxis Dicty Galpha2_veg.txt'
+my_files_dicty <- c(
+  'Chemotaxis_Dicty_RasC.txt',
+  'Chemotaxis_Dicty_Ric8.txt',
+  'Chemotaxis_Dicty_Roco4_BACKGROUND.txt',
+  'Chemotaxis_Dicty_Galpha8_GppNHp.txt',
+  'Chemotaxis_Dicty_Gbeta1.txt',
+  'Chemotaxis_Dicty_Galpha8_GDP.txt',
+  'Chemotaxis_Dicty_RapA.txt',
+  'Chemotaxis_Dicty_Galpha2_starv.txt',
+  'Chemotaxis_Dicty_Gbeta2.txt',
+  'Chemotaxis_Dicty_Galpha4.txt',
+  'Chemotaxis_Dicty_Galpha8.txt',
+  'Chemotaxis_Dicty_RasB.txt',
+  'Chemotaxis_Dicty_Rac1.txt',
+  'Chemotaxis_Dicty_RasG1.txt',
+  'Chemotaxis_Dicty_Galpha2_veg.txt'
 )
 
 
-# read raw dicty data
-get_dicty_data <- function(){
-  for (file_name in my_files){
+# read raw data
+get_data <- function(what){
+  data_list <- list()
+  
+  for (file_name in get(paste0("my_files_", what))){
     spdat <- read_delim(paste0(data_dir, file_name), col_names=F, delim="\t", skip=1)
     names(spdat) <- c('long_id','uniprot','mw','is_grouping','spectral_count')
     
-    exp_name <- gsub(file_name, pattern="Chemotaxis Dicty ", replace="") %>% gsub(pattern="\\.txt", replace="")
+    if (what == 'dicty'){
+      exp_name <- gsub(file_name, pattern="Chemotaxis_Dicty_", replace="") %>% gsub(pattern="\\.txt", replace="")
+    }
+    else if (what == 'neutro'){
+      exp_name <- gsub(file_name, pattern="Neutrophils_", replace="") %>% gsub(pattern="\\.txt", replace="")
+    }
+    
     split_expname <- strsplit(exp_name, split = "_")
     
     # will introduce na's as there are ? for kDa
@@ -46,10 +63,10 @@ get_dicty_data <- function(){
     
     data_list[[file_name]]<- spdat %>% select(long_id, uniprot, mw, is_grouping, spectral_count, bait, condition)
   }
-
+  
   all_data <- bind_rows(data_list)
 }
 
-# get the dicty data
-all_data <- get_dicty_data()
-
+# get the data
+all_data_dicty <- get_data('dicty')
+all_data_neutro <- get_data('neutro')
