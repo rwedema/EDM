@@ -1,6 +1,6 @@
-source("../global.R")
+source("global.R")
 
-
+# Given a uniprot id, plot the spectral count vs the bait + condition
 plot_spectral_bait_condition_using_uniprot<- function(uniprot_id){
   
   # filter data on substring using grepl, leaves the original uniprot annotation intact 
@@ -14,7 +14,3 @@ plot_spectral_bait_condition_using_uniprot<- function(uniprot_id){
   p <- p + geom_col() + labs(title = uniprot_id)
   p + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
-
-plot_spectral_bait_condition_using_uniprot('P36415')
-plot_spectral_bait_condition_using_uniprot('GST')
-plot_spectral_bait_condition_using_uniprot('Q54YT4')

@@ -26,6 +26,7 @@ my_files <- c(
 )
 
 
+# read raw dicty data
 get_dicty_data <- function(){
   for (file_name in my_files){
     spdat <- read_delim(paste0(data_dir, file_name), col_names=F, delim="\t", skip=1)
@@ -49,4 +50,6 @@ get_dicty_data <- function(){
   all_data <- bind_rows(data_list)
 }
 
+# get the dicty data
 all_data <- get_dicty_data()
+
